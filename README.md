@@ -1,1 +1,1 @@
-# closestpair
+# ClosestPair
