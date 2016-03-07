@@ -1,1 +1,2 @@
 # ClosestPair
+Closest Pair algorithm
