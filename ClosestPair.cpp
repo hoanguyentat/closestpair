@@ -57,11 +57,12 @@ void printPoint(Point* p){
 }
 
 float dist(Point p, Point q){
-	return sqrt(pow(p.x-q.x,2) + pow(p.y-q.y,2));
+	return sqrt(pow(abs(p.x-q.x),2) + pow(abs(p.y-q.y),2));
 }
 
 float min(float x, float y){
-	return (x < y) ? x : y;
+	if (x > y) return  y;
+	else return x;
 }
 
 float bruteForce(Point *p, int n){
@@ -72,13 +73,13 @@ float bruteForce(Point *p, int n){
 			if (d < min){
 				min = d;
 				if (min < dmin){
+					dmin = min;
 					a.x = p[i].x; b.x = p[j].x;
 					a.y = p[i].y; b.y = p[j].y;
 				}
 			}
 		}
 	}
-	// printf("dmin: %3.2f\n",dmin);
 	return min;
 }
 
@@ -132,20 +133,18 @@ void mergeSort(Point* p, int L, int R, int flag){
 
 float stripClosest(Point* pLR, int k, float d){
 	float min = d;
-	// printf("StripClosest: %f\n", min);
+
 	mergeSort(pLR,0,k-1, 1);
-	// for(int i = 0; i < k; i++) printf("(%d, %d) ",pLR[i].x, pLR[i].y);
-	// printf("\n");
 	for (int i = 0; i < k; ++i){
-		for (int j = i+1; j < k && (pLR[j].y - pLR[i].y) < min; ++j){
+		for (int j = i+1; j <i+5; ++j){
 			if (dist(pLR[i],pLR[j]) < min){
 				min = dist(pLR[i],pLR[j]);
 				if (min < dmin){
-					a.x = p[i].x; b.x = p[j].x;
-					a.y = p[i].y; b.y = p[j].y;
+					dmin = min;
+					a.x = pLR[i].x; b.x = pLR[j].x;
+					a.y = pLR[i].y; b.y = pLR[j].y;
 				}
 			}
-			// printf("StripClosest: %f\n", min);
 		}
 	}
 	return min;
@@ -155,7 +154,7 @@ void print(Point* p, int n){
 	printf("Danh sach cac diem:\n");
 	for(int i = 0; i< n; i++){
 		printf("P%d(%d,%d) ",i+1, p[i].x, p[i].y);
-		if ((i+1)%5 == 0){
+		if (i%5 == 4){
 			printf("\n");
 		}		
 	}
@@ -168,14 +167,13 @@ float ClosestPair(Point* pX, int n){
 	int mid = n/2;
 	Point midPoint = pX[mid];
 
+	//De qui tim hai diem co khoang cach nho nhat
 	float dL = ClosestPair(pX, mid);
-	// printf("ClosestPairL %f\n", dL);
 	float dR = ClosestPair(pX + mid,n-mid);
-	// printf("ClosestPairR %f\n", dR);
 	
-	float d = min(dL, dR);
-	// printf("ClosestPair %f\n", d);
+	float d = min(dL, dR);   //Khoang cach nho nhat giua hai mang
 
+	//Tim tap cac diem co khang cach toi diem chinh giua nho hon d
 	Point* pLR = (Point*) malloc (n * sizeof(Point));
 	int k = 0;
 	for (int i = 0; i < n; ++i){
@@ -184,15 +182,10 @@ float ClosestPair(Point* pX, int n){
 			k++;
 		}
 	}
-	if (dmin > min(stripClosest(pLR, k, d), d));
-	{
-		dmin = min(stripClosest(pLR, k, d), d);
-		// printf("dmin: %3.2f\n", dmin);
-	}
-	return min(stripClosest(pLR, k, d), d);
-}
 
-int main(int argc, char const *argv[]){
+	return min(stripClosest(pLR, k, d), d);;
+}
+int main(int argc, char *argv[]){
 	readFile();
 	Point* pX = (Point*) malloc(count * sizeof(Point));
 	mergeSort(p,0,count-1, 1);
@@ -204,15 +197,16 @@ int main(int argc, char const *argv[]){
 	Timer ti;
 	bruteForce(p, count);
 	double y1 = ti.getElapsedTime();
-	printf("Thoi gian chay: %f\n",y1);
 	printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+	printf("Thoi gian chay: %f\n",y1);
+	printf("\n");
 	Timer timer;
 	float min = ClosestPair(pX, count);
-	printf("Khoang cach gan nhat la: %3.2f\n", dmin);
-	printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 	double y2 = timer.getElapsedTime();
-	printf("Thoi gian chay la: %f\n", y2);
-	free(pX);
-	free(p);
+	printf("Khoang cach gan nhat la: %3.2f\n", min);
+	printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+	printf("Thoi gian chay: %f\n",y2);
+
+	
 	return 0;
 }
