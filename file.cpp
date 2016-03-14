@@ -15,7 +15,7 @@ void ghiFile(){
 	fprintf(f, "%d\n", n);
 	for (int i = 0; i < n; ++i)
 	{
-		fprintf(f, "%d %d\n",rand() % 100000, rand()%100000);
+		fprintf(f, "%d %d\n",rand() % 10000, rand()%10000);
 	}
 	fclose(f);
 }
