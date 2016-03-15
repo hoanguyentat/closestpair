@@ -156,7 +156,7 @@ float stripClosest(Point* pLR, int k, float d){
 }
 
 float ClosestPair(Point* pX, int n){
-	if(n <= 3) return bruteForce(pX, n);
+	if(n <= 5) return bruteForce(pX, n);
 	
 	//Chia mang thanh hai phan bang nhau
 	int mid = n/2;

@@ -1,5 +1,5 @@
-$(PROGRAM) : $(PROGRAM).cpp
-	g++ -o $(PROGRAM) $(PROGRAM).cpp
-	./$(PROGRAM)
+$(NAME) : $(NAME).cpp
+	g++ -o $(NAME) $(NAME).cpp
+	./$(NAME)
 run: 
-	./$(PROGRAM)
+	./$(NAME)

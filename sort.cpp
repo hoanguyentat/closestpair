@@ -102,20 +102,32 @@ void mergeSort(Point* p, int L, int R, int flag){
 
 int main(int argc, char *argv[])
 {
+	int choose;
 	readFile();
-	printPoint(p);
-	Timer ti;
-	insertionSort(p, count);
-	double y = ti.getElapsedTime();
-	printPoint(p);
-	printf("Thoi gian chay la: %f\n", y);
-	
-
-	// Timer timer;
-	// insertionSort(p, count);
-	// double y1 = timer.getElapsedTime();
 	// printPoint(p);
-	// printf("Thoi gian chay la: %f\n", y1);
+	printf("1. Insertion sort\n");
+	printf("2. Merge sort\n");
+	printf("Nhap vao lua chon de sap xep: \n");
+	scanf("%d",&choose);
+	switch(choose){
+		case 1:
+			{
+				Timer ti;
+				insertionSort(p, count);
+				double y = ti.getElapsedTime();
+				printf("Thoi gian chay la: %f\n", y);
+			}
+			break;
+		case 2: 
+			{
+				Timer timer;
+				mergeSort(p,0, count -1, 0);
+				double y1 = timer.getElapsedTime();
+				printf("Thoi gian chay la: %f\n", y1);
+			}
+			break;
+		default: break;
+	}
 	
 	return 0;
 }
