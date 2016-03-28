@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include "Timer.cpp"
 
 int count = 0;
 struct Point{
@@ -26,6 +27,16 @@ void readFile(){
 		p[i].y = y;
 	}
 	fclose(f);
+}
+
+void printPoint(Point* p){
+	printf("Danh sach cac diem:\n");
+	for(int i = 0; i< count; i++){
+		printf("P%d(%d,%d) ",i+1, p[i].x, p[i].y);
+		if (i%5 == 4){
+			printf("\n");
+		}		
+	}
 }
 
 void insertionSort(Point* p, int n){
@@ -91,7 +102,31 @@ void mergeSort(Point* p, int L, int R, int flag){
 
 int main(int argc, char *argv[])
 {
+	int choose;
 	readFile();
-	
+	// printPoint(p);
+	printf("1. Insertion sort\n");
+	printf("2. Merge sort\n");
+	printf("Nhap vao lua chon de sap xep: \n");
+	scanf("%d",&choose);
+	switch(choose){
+		case 1:
+			{
+				Timer ti;
+				insertionSort(p, count);
+				double y = ti.getElapsedTime();
+				printf("Thoi gian chay la: %f\n", y);
+			}
+			break;
+		case 2: 
+			{
+				Timer timer;
+				mergeSort(p,0, count -1, 0);
+				double y1 = timer.getElapsedTime();
+				printf("Thoi gian chay la: %f\n", y1);
+			}
+			break;
+		default: break;
+	}
 	return 0;
 }
