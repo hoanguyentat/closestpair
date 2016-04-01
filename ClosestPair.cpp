@@ -4,7 +4,7 @@
 #include <windows.h>
 #include <math.h>
 #include "Timer.cpp"
-#define number 15000
+#define number 10000
 
 int count = 0;
 struct Point{
@@ -54,7 +54,7 @@ void ghiFile(int n){
 	fprintf(f, "%d\n", n);
 	for (int i = 0; i < n; ++i)
 	{
-		fprintf(f, "%d %d\n",rand() % 10000, rand()%10000);
+		fprintf(f, "%d %d\n",rand() % 100000, rand()%100000);
 	}
 	fclose(f);
 }
@@ -165,7 +165,7 @@ void mergeSort(Point* p, int L, int R, int flag){
 float stripClosest(Point* pLR, int k, float d){
 	float min = d;
 
-	mergeSort(pLR,0,k-1, 1);
+//	mergeSort(pLR,0,k-1, 1);
 	for (int i = 0; i < k; ++i){
 		// int n = 0;
 		// Gioi han so diem can xet
@@ -217,14 +217,12 @@ float ClosestPair(Point* pX, int n){
 	return min(stripClosest(pLR, k, d), d);;
 }
 int main(int argc, char *argv[]){
-	for(int i = 0; i < 10; i++){
-//		int number;
-//		printf("Nhap vao so diem: ");
-//		scanf("%d", &number);
+//	for(int i = 0; i < 5; i++){
+
 		ghiFile(number);
 		readFile();
-	//	Point* pX = (Point*) malloc(count * sizeof(Point));
-		mergeSort(p,0,count-1, 0);
+		//Sap xep cac diem theo toa do y
+		mergeSort(p,0,count-1, 1);
 	//	setPoint(p, pX);
 	//	printf("Co %d diem tren mat phang.\n", count);
 	//	printPoint(p);
@@ -234,18 +232,17 @@ int main(int argc, char *argv[]){
 		 printf("Khoang cach gan nhat la: %3.2f\n", minbf);
 		 // printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 		 printf("Thoi gian chay: %f\n",y1);
-		 printf("\n");
 		Timer timer;
 		float min1 = ClosestPair(p, count);
 		double y2 = timer.getElapsedTime();
 		printf("Khoang cach gan nhat la: %3.2f\n", min1);
 		printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 		printf("Thoi gian chay: %f\n",y2);
-		
+		printf("\n");
 		writeFile(y1,y2);
 //	free(pX);
 		free(p);
 		Sleep(2000);
-	}
+//	}
 	return 0;
 }
