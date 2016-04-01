@@ -1,30 +1,19 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+int a[500];
+int b[500];
+int c[500];
+int n = 0;
 
-int k = 0;
-int n;
-void ghiFile(){
+void docfile(int a[], b[], c[]){
 	FILE *f;
-	f = fopen("point.txt","w");
-	if (f == NULL)
-	{
-		printf("Khong mo duoc file\n");
-		exit(1);
-	}
-	fprintf(f, "%d\n", n);
-	for (int i = 0; i < n; ++i)
-	{
-		fprintf(f, "%d %d\n",rand() % 10000, rand()%10000);
-	}
-	fclose(f);
-}
-void docfile(int a[]){
-	FILE *f;
-	f = fopen("docfile.txt","rt");
+	f = fopen("result.txt","rt");
 	while(fgetc(f)!=EOF){
-		fscanf(f,"%3d",&a[k]);
-		k++;
+		fscanf(f,"%3d",&a[n]);
+		fscanf(f,"%3d",&b[n]);
+		fscanf(f,"%3d",&c[n]);
+		n++;
 	}
 	fclose(f);
 }
