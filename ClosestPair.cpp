@@ -1,12 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-// #include <windows.h>
-#include <unistd.h>
+#include <windows.h>
 #include <math.h>
-#include <float.h>
 #include "Timer.cpp"
-#define number 5000
+#define number 10000
 
 int count = 0;
 struct Point{
@@ -15,7 +13,7 @@ struct Point{
 
 Point* p;
 Point a, b;
-float dmin = FLT_MAX;										// Khoi tao gia tri khoang cach nho nhat
+float dmin = 10000;										// Khoi tao gia tri khoang cach nho nhat
 void readFile();											// Doc va khoi tao diem ban dau
 void printPoint(Point*);								// in danh sach cac diem
 float dist(Point, Point);								// khoang cach giua hai diem o, q
@@ -219,7 +217,7 @@ float ClosestPair(Point* pX, int n){
 	return min(stripClosest(pLR, k, d), d);;
 }
 int main(int argc, char *argv[]){
-	for(int i = 0; i < 8; i++){
+//	for(int i = 0; i < 5; i++){
 
 		ghiFile(number);
 		readFile();
@@ -244,9 +242,7 @@ int main(int argc, char *argv[]){
 		writeFile(y1,y2);
 //	free(pX);
 		free(p);
-		//Sleep 2s de co the sinh so ngau nhien khong trung nhau khi chay lien tiep trong vong for
-		// Sleep(2000);
-		usleep(2000000);
-	}
+		Sleep(2000);
+//	}
 	return 0;
 }

@@ -1,38 +1,32 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
-int a[500];
-int b[500];
+float a[500];
+float b[500];
 int c[500];
-int n = 0;
-
-void docfile(int a[], b[], c[]){
+int count = 0;
+void scanFile(float a[],float b[],int c[]){
 	FILE *f;
 	f = fopen("result.txt","rt");
 	while(fgetc(f)!=EOF){
-		fscanf(f,"%3d",&a[n]);
-		fscanf(f,"%3d",&b[n]);
-		fscanf(f,"%3d",&c[n]);
-		n++;
+		fscanf(f,"%f %f %d",&a[count],&b[count],&c[count]);
+		count++;
 	}
 	fclose(f);
 }
 
 int main(){
-	// int a[100];
-	// docfile(a);
-	// printf("%d \n",k);
-	// int maxSum = 0;
-	// for(int i=0; i<k;i++){
-	// 	int sum = 0;
-	// 	for(int j=i;j<k;j++){
-	// 		sum+=a[j];
-	// 		if(maxSum<sum) maxSum = sum;
-	// 	}
-	// }
-	printf("Nhap vao so phan tu: ");
-	scanf("%d", &n);
-	ghiFile();
+	scanFile(a, b, c);
+	int m = 116, n= 121;
+	float sum1 = 0, sum2 = 0;
+	for (int i = m; i < n; ++i)
+	{
+		printf("%f ", a[i]);
+		sum1 += a[i];
+		sum2 += b[i];
+	}
+	printf("\nSo ban ghi: %d\n", n);
+	printf("Gia tri %f, %f", sum1/(n-m), sum2/(n-m));
 	// printf("Tong lon nhat la: %d", maxSum);
 	return 0;
 }
