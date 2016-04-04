@@ -17,7 +17,7 @@ void scanFile(float a[],float b[],int c[]){
 
 int main(){
 	scanFile(a, b, c);
-	int m = 116, n= 121;
+	int m = 16, n= 24;
 	float sum1 = 0, sum2 = 0;
 	for (int i = m; i < n; ++i)
 	{

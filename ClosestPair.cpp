@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <float.h>
 #include <windows.h>
 #include <math.h>
 #include "Timer.cpp"
-#define number 10000
+//#define number 20
 
 int count = 0;
 struct Point{
@@ -13,17 +14,20 @@ struct Point{
 
 Point* p;
 Point a, b;
-float dmin = 10000;										// Khoi tao gia tri khoang cach nho nhat
-void readFile();											// Doc va khoi tao diem ban dau
-void printPoint(Point*);								// in danh sach cac diem
-float dist(Point, Point);								// khoang cach giua hai diem o, q
+float dmin = FLT_MAX;						//dmin la gia tri nho nhat trong suot chuong trinh
+void readFile();
+void printPoint(Point*);
+void setPoint(Point*, Point*);
+void generatePoint(int);
 void mergeSort(Point*, int, int, int);
 void merge(Point*, int, int ,int, int); 			// sap xep tron theo x voi flag = 0, theo y voi flag = 1
-float bruteForce(Point*, int);						// Thuat toan vet can
-void setPoint(Point*, Point*);
+void result(double, double);
 float min(float, float);
 float stripClosest(Point*, int, float);
+float dist(Point, Point);								// khoang cach giua hai diem o, q
+float bruteForce(Point*, int);						// Thuat toan vet can
 
+//Doc gia tri dau vao
 void readFile(){
 	FILE* f = fopen("point.txt","rt");
 	if(f==NULL) {
@@ -41,8 +45,8 @@ void readFile(){
 	}
 	fclose(f);
 }
-// Sinh ngau nhien n diem tren mat phang
-void ghiFile(int n){
+// Sinh ngau nhien diem tren mat phang
+void generatePoint(int n){
 	srand(time(NULL));
 	FILE *f;
 	f = fopen("point.txt","w");
@@ -60,7 +64,7 @@ void ghiFile(int n){
 }
 
 //Ghi lai ket qua
-void writeFile(double y1, double y2){
+void result(double y1, double y2){
 	FILE* f1 = fopen("result.txt","a+");
 	if(f1 == NULL){
 		printf("Khong mo duoc file");
@@ -76,6 +80,7 @@ void setPoint(Point* p, Point* q){
 	}
 }
 
+//In ra man hinh toa do cac diem
 void printPoint(Point* p){
 	printf("Danh sach cac diem:\n");
 	for(int i = 0; i< count; i++){
@@ -86,17 +91,20 @@ void printPoint(Point* p){
 	}
 }
 
+//Tinh khoang cach giua hai diem
 float dist(Point p, Point q){
 	return sqrt(pow(abs(p.x-q.x),2) + pow(abs(p.y-q.y),2));
 }
 
+//Tra ve gia tri nho nhat
 float min(float x, float y){
 	if (x > y) return  y;
 	else return x;
 }
 
+//Thuat toan vet can
 float bruteForce(Point *p, int n){
-	float min = 10000;
+	float min = FLT_MAX;
 	for(int i = 0; i < n; i++){
 		for(int j = i+1; j < n; j++){
 			float d = dist(p[i], p[j]);
@@ -162,15 +170,14 @@ void mergeSort(Point* p, int L, int R, int flag){
 	}
 }
 
+//Tim khoang cach nho nhat o khoang giua
 float stripClosest(Point* pLR, int k, float d){
 	float min = d;
 
 //	mergeSort(pLR,0,k-1, 1);
 	for (int i = 0; i < k; ++i){
-		// int n = 0;
 		// Gioi han so diem can xet
 		for (int j = i+1; j < k && pLR[j].y -  pLR[i].y < min; ++j){
-			// n++;
 			if (dist(pLR[i],pLR[j]) < min){
 				min = dist(pLR[i],pLR[j]);
 				if (min < dmin){
@@ -180,7 +187,6 @@ float stripClosest(Point* pLR, int k, float d){
 				}
 			}
 		}
-		// printf("stripClosest %d\n",n);
 	}
 	free(pLR);
 	return min;
@@ -217,32 +223,50 @@ float ClosestPair(Point* pX, int n){
 	return min(stripClosest(pLR, k, d), d);;
 }
 int main(int argc, char *argv[]){
-//	for(int i = 0; i < 5; i++){
-
-		ghiFile(number);
+//	for(int i = 0; i < 10; i++){
+//		generatePoint(number);
 		readFile();
 		//Sap xep cac diem theo toa do y
 		mergeSort(p,0,count-1, 1);
-	//	setPoint(p, pX);
-	//	printf("Co %d diem tren mat phang.\n", count);
-	//	printPoint(p);
-		 Timer ti;
-		 float minbf = bruteForce(p, count);
-		 double y1 = ti.getElapsedTime();
-		 printf("Khoang cach gan nhat la: %3.2f\n", minbf);
-		 // printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-		 printf("Thoi gian chay: %f\n",y1);
-		Timer timer;
-		float min1 = ClosestPair(p, count);
-		double y2 = timer.getElapsedTime();
-		printf("Khoang cach gan nhat la: %3.2f\n", min1);
-		printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-		printf("Thoi gian chay: %f\n",y2);
-		printf("\n");
-		writeFile(y1,y2);
-//	free(pX);
+		
+		//	printf("Co %d diem tren mat phang.\n", count);
+		//	printPoint(p);
+		int choose;
+		double y1, y2;
+		printf("Xin moi lua chon:\n");
+		printf("1. Thuat toan Vet can\n");
+		printf("2. Thuat toan Chia de tri\n");
+		printf("Nhap vao vi tri: ");
+		scanf("%d", &choose);
+		switch(choose){
+			case 1:{
+				//Do thoi gian chay cua cac giai thuat
+				Timer ti;
+				float minbf = bruteForce(p, count);
+				y1 = ti.getElapsedTime();
+				printf("Khoang cach gan nhat la: %3.2f\n", minbf);
+				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+				printf("Thoi gian chay: %f\n",y1);
+				break;
+			}
+			case 2:{
+				Timer timer;
+				float min1 = ClosestPair(p, count);
+				y2 = timer.getElapsedTime();
+				printf("Khoang cach gan nhat la: %3.2f\n", min1);
+				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+				printf("Thoi gian chay: %f\n",y2);
+				printf("\n");
+				break;
+			}
+			default: {
+				printf("Ban khong lua chon thuat toan\n");
+				break;
+			}
+		}
+		result(y1,y2);
 		free(p);
-		Sleep(2000);
+		Sleep(1000);
 //	}
 	return 0;
 }
