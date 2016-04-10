@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include <float.h>
-#include <windows.h>
+// #include <windows.h>			//Thu vien chua ham Sleep tren window
 #include <math.h>
 #include "Timer.cpp"
-#include <set>
-#define number 2000
+#include <unistd.h>				// Thu vien chua ham usleep tren ubuntu
+// #include <set>
+#define number 80000
 
 using namespace std;
 int count = 0;
@@ -67,12 +68,14 @@ void generatePoint(Point a[], int n){
 	fprintf(f, "%d\n", n);
 	int count = 0;
 	int x; int y;
+	// srand(time(NULL));
 	x = rand() %10000;
 	y = rand() %100000;	
 	for(int i = 0; i < n; i++){
 		while(checkPoint(a,i,x,y)){
+			// srand(time(NULL));
 			x = rand() %10000;
-			y = rand() %10000;
+			y = rand() %100000;
 		}
 		a[i].x = x;
 		a[i].y = y;
@@ -289,7 +292,8 @@ int main(int argc, char *argv[]){
 		 result(y1,y2);
 		 dmin = FLT_MAX;
 		 free(p);
-		 Sleep(2000);
+		 // Sleep(2000);				//Tre chuong trinh dung tren window
+		 usleep(2000000);				//Tre chuong trinh 2s sau khi tinh dung tren ubuntu
 	}
 	return 0;
 }
