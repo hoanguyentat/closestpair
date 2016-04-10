@@ -5,8 +5,10 @@
 #include <windows.h>
 #include <math.h>
 #include "Timer.cpp"
-//#define number 20
+#include <set>
+#define number 2000
 
+using namespace std;
 int count = 0;
 struct Point{
 	int x, y;
@@ -46,8 +48,15 @@ void readFile(){
 	fclose(f);
 }
 // Sinh ngau nhien diem tren mat phang
-void generatePoint(int n){
-	srand(time(NULL));
+bool checkPoint(Point *a, int count, int x, int y){
+	if (count == 0) return 0;
+	for(int i = 0; i< count; i++){
+		if (a[i].x == x && a[i].y == y) return 1;
+	}
+	return 0;
+}
+
+void generatePoint(Point a[], int n){	
 	FILE *f;
 	f = fopen("point.txt","w");
 	if (f == NULL)
@@ -56,12 +65,22 @@ void generatePoint(int n){
 		exit(1);
 	}
 	fprintf(f, "%d\n", n);
-	for (int i = 0; i < n; ++i)
-	{
-		fprintf(f, "%d %d\n",rand() % 100000, rand()%100000);
+	int count = 0;
+	int x; int y;
+	x = rand() %10000;
+	y = rand() %100000;	
+	for(int i = 0; i < n; i++){
+		while(checkPoint(a,i,x,y)){
+			x = rand() %10000;
+			y = rand() %10000;
+		}
+		a[i].x = x;
+		a[i].y = y;
+		fprintf(f, "%d %d\n",x, y);
 	}
 	fclose(f);
 }
+
 
 //Ghi lai ket qua
 void result(double y1, double y2){
@@ -192,16 +211,16 @@ float stripClosest(Point* pLR, int k, float d){
 	return min;
 }
 
-float ClosestPair(Point* pX, int n){
-	if(n <= 5) return bruteForce(pX, n);
+float ClosestPair(Point* p, int n){
+	if(n <= 5) return bruteForce(p, n);
 	
 	//Chia mang thanh hai phan bang nhau
 	int mid = n/2;
-	Point midPoint = pX[mid];
+	Point midPoint = p[mid];
 
 	//De qui tim hai diem co khoang cach nho nhat
-	float dL = ClosestPair(pX, mid);
-	float dR = ClosestPair(pX + mid,n-mid);
+	float dL = ClosestPair(p, mid);
+	float dR = ClosestPair(p + mid,n-mid);
 	
 	float d = min(dL, dR);   //Khoang cach nho nhat giua hai mang
 
@@ -214,8 +233,8 @@ float ClosestPair(Point* pX, int n){
 	}
 	int k = 0;
 	for (int i = 0; i < n; ++i){
-		if (abs(pX[i].x - midPoint.x) <= d){
-			pLR[k] = pX[i];
+		if (abs(p[i].x - midPoint.x) <= d){
+			pLR[k] = p[i];
 			k++;
 		}
 	}
@@ -223,50 +242,54 @@ float ClosestPair(Point* pX, int n){
 	return min(stripClosest(pLR, k, d), d);;
 }
 int main(int argc, char *argv[]){
-//	for(int i = 0; i < 10; i++){
-//		generatePoint(number);
+	srand(time(NULL));
+	for(int i = 0; i < 5; i++){
+		Point* q = (Point*) malloc (number*sizeof(Point));
+		
+		generatePoint(q, number);
 		readFile();
 		//Sap xep cac diem theo toa do y
 		mergeSort(p,0,count-1, 1);
 		
 		//	printf("Co %d diem tren mat phang.\n", count);
 		//	printPoint(p);
-		int choose;
+//		int choose;
 		double y1, y2;
-		printf("Xin moi lua chon:\n");
-		printf("1. Thuat toan Vet can\n");
-		printf("2. Thuat toan Chia de tri\n");
-		printf("Nhap vao vi tri: ");
-		scanf("%d", &choose);
-		switch(choose){
-			case 1:{
+//		printf("Xin moi lua chon:\n");
+//		printf("1. Thuat toan Vet can\n");
+//		printf("2. Thuat toan Chia de tri\n");
+//		printf("Nhap vao vi tri: ");
+//		scanf("%d", &choose);
+//		switch(choose){
+//	     	 case 1:{
 				//Do thoi gian chay cua cac giai thuat
 				Timer ti;
-				float minbf = bruteForce(p, count);
+				float min1 = bruteForce(p, count);
 				y1 = ti.getElapsedTime();
-				printf("Khoang cach gan nhat la: %3.2f\n", minbf);
+				printf("Khoang cach gan nhat la: %3.2f\n", min1);
 				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 				printf("Thoi gian chay: %f\n",y1);
-				break;
-			}
-			case 2:{
+//				 break;
+//			 }
+//			 case 2:{
 				Timer timer;
-				float min1 = ClosestPair(p, count);
+				float min2 = ClosestPair(p, count);
 				y2 = timer.getElapsedTime();
-				printf("Khoang cach gan nhat la: %3.2f\n", min1);
+				printf("Khoang cach gan nhat la: %3.2f\n", min2);
 				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 				printf("Thoi gian chay: %f\n",y2);
 				printf("\n");
-				break;
-			}
-			default: {
-				printf("Ban khong lua chon thuat toan\n");
-				break;
-			}
-		}
-		result(y1,y2);
-		free(p);
-		Sleep(1000);
-//	}
+//				 break;
+//			 }
+//			 default: {
+//			 	printf("Ban khong lua chon thuat toan\n");
+//			 	break;
+//			 }
+//		 }
+		 result(y1,y2);
+		 dmin = FLT_MAX;
+		 free(p);
+		 Sleep(2000);
+	}
 	return 0;
 }
