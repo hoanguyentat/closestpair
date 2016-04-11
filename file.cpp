@@ -15,18 +15,32 @@ void scanFile(float a[],float b[],int c[]){
 	fclose(f);
 }
 
+void ghiFile(float sum1, float sum2, int number){
+	FILE *f;
+	f = fopen("ketqua.txt", "at");
+	if (f == NULL){
+		printf("Khong mo duoc file\n");
+		exit(1);
+	}
+	fprintf(f,"%f %f %d\n",sum1, sum2, number);
+	fclose(f);
+}
+
 int main(){
 	scanFile(a, b, c);
-	int m = 16, n= 24;
-	float sum1 = 0, sum2 = 0;
-	for (int i = m; i < n; ++i)
+	
+	for (int i = 0; i < count; i+=5)
 	{
-		printf("%f ", a[i]);
-		sum1 += a[i];
-		sum2 += b[i];
+		float sum1 = 0, sum2 = 0;
+		for(int j = i; j < i+5; j++){
+//			printf("%f ", a[j]);
+			sum1 += a[j];
+			sum2 += b[j];
+		}
+		sum1 = sum1/5;
+		sum2 = sum2/5;
+		ghiFile(sum1, sum2, c[i]);
 	}
-	printf("\nSo ban ghi: %d\n", n);
-	printf("Gia tri %f, %f", sum1/(n-m), sum2/(n-m));
 	// printf("Tong lon nhat la: %d", maxSum);
 	return 0;
 }

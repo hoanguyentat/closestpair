@@ -2,12 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 #include <float.h>
-// #include <windows.h>			//Thu vien chua ham Sleep tren window
+#include <windows.h>
 #include <math.h>
 #include "Timer.cpp"
-#include <unistd.h>				// Thu vien chua ham usleep tren ubuntu
-// #include <set>
-#define number 80000
+#include <set>
+#define number 100000
 
 using namespace std;
 int count = 0;
@@ -66,16 +65,14 @@ void generatePoint(Point a[], int n){
 		exit(1);
 	}
 	fprintf(f, "%d\n", n);
-	int count = 0;
+//	int count = 0;
 	int x; int y;
-	// srand(time(NULL));
 	x = rand() %10000;
 	y = rand() %100000;	
 	for(int i = 0; i < n; i++){
 		while(checkPoint(a,i,x,y)){
-			// srand(time(NULL));
 			x = rand() %10000;
-			y = rand() %100000;
+			y = rand() %10000;
 		}
 		a[i].x = x;
 		a[i].y = y;
@@ -242,7 +239,7 @@ float ClosestPair(Point* p, int n){
 		}
 	}
 
-	return min(stripClosest(pLR, k, d), d);;
+	return min(stripClosest(pLR, k, d), d);
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
@@ -266,12 +263,12 @@ int main(int argc, char *argv[]){
 //		switch(choose){
 //	     	 case 1:{
 				//Do thoi gian chay cua cac giai thuat
-				Timer ti;
-				float min1 = bruteForce(p, count);
-				y1 = ti.getElapsedTime();
-				printf("Khoang cach gan nhat la: %3.2f\n", min1);
-				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-				printf("Thoi gian chay: %f\n",y1);
+//				Timer ti;
+//				float min1 = bruteForce(p, count);
+//				y1 = ti.getElapsedTime();
+//				printf("Khoang cach gan nhat la: %3.2f\n", min1);
+//				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+//				printf("Thoi gian chay: %f\n",y1);
 //				 break;
 //			 }
 //			 case 2:{
@@ -289,11 +286,10 @@ int main(int argc, char *argv[]){
 //			 	break;
 //			 }
 //		 }
-		 result(y1,y2);
+		 result(0.000000,y2);
 		 dmin = FLT_MAX;
 		 free(p);
-		 // Sleep(2000);				//Tre chuong trinh dung tren window
-		 usleep(2000000);				//Tre chuong trinh 2s sau khi tinh dung tren ubuntu
+		 Sleep(2000);
 	}
 	return 0;
 }
