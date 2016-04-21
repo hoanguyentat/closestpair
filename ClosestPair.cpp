@@ -212,12 +212,10 @@ float stripClosest(Point* pLR, int k, float d){
 }
 
 float ClosestPair(Point* p, int n){
-	if(n <= 5) return bruteForce(p, n);
-	
+	if(n <= 3) return bruteForce(p, n);
 	//Chia mang thanh hai phan bang nhau
 	int mid = n/2;
 	Point midPoint = p[mid];
-
 	//De qui tim hai diem co khoang cach nho nhat
 	float dL = ClosestPair(p, mid);
 	float dR = ClosestPair(p + mid,n-mid);
@@ -243,35 +241,35 @@ float ClosestPair(Point* p, int n){
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
-	for(int i = 0; i < 5; i++){
+//	for(int i = 0; i < 5; i++){
 		Point* q = (Point*) malloc (number*sizeof(Point));
 		
-		generatePoint(q, number);
+//		generatePoint(q, number);
 		readFile();
 		//Sap xep cac diem theo toa do y
 		mergeSort(p,0,count-1, 1);
 		
 		//	printf("Co %d diem tren mat phang.\n", count);
 		//	printPoint(p);
-//		int choose;
+		int choose;
 		double y1, y2;
-//		printf("Xin moi lua chon:\n");
-//		printf("1. Thuat toan Vet can\n");
-//		printf("2. Thuat toan Chia de tri\n");
-//		printf("Nhap vao vi tri: ");
-//		scanf("%d", &choose);
-//		switch(choose){
-//	     	 case 1:{
+		printf("Xin moi lua chon:\n");
+		printf("1. Thuat toan Vet can\n");
+		printf("2. Thuat toan Chia de tri\n");
+		printf("Nhap vao vi tri: ");
+		scanf("%d", &choose);
+		switch(choose){
+	     	 case 1:{
 				//Do thoi gian chay cua cac giai thuat
-//				Timer ti;
-//				float min1 = bruteForce(p, count);
-//				y1 = ti.getElapsedTime();
-//				printf("Khoang cach gan nhat la: %3.2f\n", min1);
-//				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-//				printf("Thoi gian chay: %f\n",y1);
-//				 break;
-//			 }
-//			 case 2:{
+				Timer ti;
+				float min1 = bruteForce(p, count);
+				y1 = ti.getElapsedTime();
+				printf("Khoang cach gan nhat la: %3.2f\n", min1);
+				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+				printf("Thoi gian chay: %f\n",y1);
+				 break;
+			 }
+			 case 2:{
 				Timer timer;
 				float min2 = ClosestPair(p, count);
 				y2 = timer.getElapsedTime();
@@ -279,17 +277,17 @@ int main(int argc, char *argv[]){
 				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 				printf("Thoi gian chay: %f\n",y2);
 				printf("\n");
-//				 break;
-//			 }
-//			 default: {
-//			 	printf("Ban khong lua chon thuat toan\n");
-//			 	break;
-//			 }
-//		 }
-		 result(0.000000,y2);
+				 break;
+			 }
+			 default: {
+			 	printf("Ban khong lua chon thuat toan\n");
+			 	break;
+			 }
+		 }
+//		 result(y1,y2);
 		 dmin = FLT_MAX;
 		 free(p);
-		 Sleep(2000);
-	}
+//		 Sleep(2000);
+//	}
 	return 0;
 }
