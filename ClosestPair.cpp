@@ -2,14 +2,17 @@
 #include <stdlib.h>
 #include <time.h>
 #include <float.h>
-#include <windows.h>
+// #include <windows.h>
+#include <string.h>
 #include <math.h>
 #include "Timer.cpp"
 #include <set>
-#define number 100000
+// #define number 100000
 
 using namespace std;
 int count = 0;
+char fileName[50]="input";
+bool checkRead = false;
 struct Point{
 	int x, y;
 };
@@ -17,7 +20,8 @@ struct Point{
 Point* p;
 Point a, b;
 float dmin = FLT_MAX;						//dmin la gia tri nho nhat trong suot chuong trinh
-void readFile();
+void readFile(char*);
+void savePoint(Point*, int, char*);
 void printPoint(Point*);
 void setPoint(Point*, Point*);
 void generatePoint(int);
@@ -30,10 +34,11 @@ float dist(Point, Point);								// khoang cach giua hai diem o, q
 float bruteForce(Point*, int);						// Thuat toan vet can
 
 //Doc gia tri dau vao
-void readFile(){
-	FILE* f = fopen("point.txt","rt");
+void readFile(char fileName[]){
+	strcat(fileName, ".in");		//Gan phan mo rong cho file
+	FILE* f = fopen(fileName,"rt");
 	if(f==NULL) {
-		printf("Khong mo duoc file");
+		printf("Khong mo duoc file\n");
 		exit(0);
 	}
 	fscanf(f, "%d", &count);
@@ -47,6 +52,24 @@ void readFile(){
 	}
 	fclose(f);
 }
+
+void savePoint(Point *p, int count, char file[]){
+	FILE *f;
+	strcat(file,".in");
+	f = fopen(file,"w");
+	if (f == NULL)
+	{
+		printf("Khong mo duoc file\n");
+		exit(1);
+	}
+	fprintf(f, "%d\n", count);
+	for (int i = 0; i < count; ++i)
+	{
+		fprintf(f, "%d %d\n",p[i].x, p[i].y);
+	}
+	fclose(f);
+}
+
 // Sinh ngau nhien diem tren mat phang
 bool checkPoint(Point *a, int count, int x, int y){
 	if (count == 0) return 0;
@@ -56,7 +79,7 @@ bool checkPoint(Point *a, int count, int x, int y){
 	return 0;
 }
 
-void generatePoint(Point a[], int n){	
+void generatePoint(Point a[], int n){
 	FILE *f;
 	f = fopen("point.txt","w");
 	if (f == NULL)
@@ -68,7 +91,7 @@ void generatePoint(Point a[], int n){
 //	int count = 0;
 	int x; int y;
 	x = rand() %10000;
-	y = rand() %100000;	
+	y = rand() %100000;
 	for(int i = 0; i < n; i++){
 		while(checkPoint(a,i,x,y)){
 			x = rand() %10000;
@@ -106,7 +129,7 @@ void printPoint(Point* p){
 		printf("P%d(%d,%d) ",i+1, p[i].x, p[i].y);
 		if (i%5 == 4){
 			printf("\n");
-		}		
+		}
 	}
 }
 
@@ -147,8 +170,8 @@ void merge(Point* p, int L, int M, int R, int flag){
 	for(int k = L; k <= R; k++){
 		if(i > M){
 			tmp[k] = p[j];
-			j++;	
-		} 
+			j++;
+		}
 		else if(j>R){
 			tmp[k] = p[i];
 			i++;
@@ -219,7 +242,7 @@ float ClosestPair(Point* p, int n){
 	//De qui tim hai diem co khoang cach nho nhat
 	float dL = ClosestPair(p, mid);
 	float dR = ClosestPair(p + mid,n-mid);
-	
+
 	float d = min(dL, dR);   //Khoang cach nho nhat giua hai mang
 
 	//Tim tap cac diem co khang cach toi diem chinh giua nho hon d
@@ -242,34 +265,79 @@ float ClosestPair(Point* p, int n){
 int main(int argc, char *argv[]){
 	srand(time(NULL));
 //	for(int i = 0; i < 5; i++){
-		Point* q = (Point*) malloc (number*sizeof(Point));
-		
+		// Point* q = (Point*) malloc (number*sizeof(Point));
+
 //		generatePoint(q, number);
-		readFile();
+	// char fileName;
+	// printf("Hay nhap ten file du lieu dau vao\n");
+		// readFile();
 		//Sap xep cac diem theo toa do y
-		mergeSort(p,0,count-1, 1);
 		
+	int choose;
 		//	printf("Co %d diem tren mat phang.\n", count);
 		//	printPoint(p);
-		int choose;
+	do{
+		
 		double y1, y2;
+		system("clear");
 		printf("Xin moi lua chon:\n");
-		printf("1. Thuat toan Vet can\n");
-		printf("2. Thuat toan Chia de tri\n");
-		printf("Nhap vao vi tri: ");
+		printf("1. Doc du lieu dau vao\n");
+		printf("2. Giai quyet bai toan\n");
+		printf("3. Danh sach cac diem\n");
+		printf("4. Thoat\n");
+		// printf("3. Thuat toan Chia de tri\n");
+		printf("Nhap vao lua chon cua ban: ");
 		scanf("%d", &choose);
+		
+		// clrscr();
 		switch(choose){
 	     	 case 1:{
-				//Do thoi gian chay cua cac giai thuat
-				Timer ti;
-				float min1 = bruteForce(p, count);
-				y1 = ti.getElapsedTime();
-				printf("Khoang cach gan nhat la: %3.2f\n", min1);
-				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-				printf("Thoi gian chay: %f\n",y1);
+	     	 	system("clear");
+				//Doc du lieu dau vao trong chuong trinh
+				printf("1. Doc du lieu tu file\n");
+				printf("2. Nhap du lieu tu ban phim\n");
+				int chooseIn;
+				scanf("%d", &chooseIn);
+				switch(chooseIn){
+					case 1:{
+						fflush(stdin);
+						puts("Nhap vao ten file du lieu dau vao: ");
+						fflush(stdin);
+						scanf("%s",fileName);
+						readFile(fileName);
+						checkRead = true;
+						// printPoint(p);
+						break;
+					}
+					// Doc du lieu tu ban phim
+					case 2:{
+						printf("Nhap vao so diem: ");
+						scanf("%d", &count);
+						p = (Point*) malloc (count * sizeof(Point));
+						for (int i = 0; i < count; ++i)
+						{
+							printf("x[%d]: ",i+1);
+							scanf("%d", &p[i].x);
+							printf("y[%d]: ",i+1);
+							scanf("%d", &p[i].y);
+						}
+						strcpy(fileName,"input");
+						savePoint(p, count, fileName);
+						checkRead = true;		//Bien kiem tra xem du lieu da duoc doc chua
+					}
+				}
 				 break;
 			 }
-			 case 2:{
+			case 2:{
+				system("clear");
+				if (checkRead == false)
+				{
+					printf("Chua doc du lieu dau vao...\n");
+					break;
+				}
+				printf("1. Brute Force\n");
+				printf("2. Divide and Conquer\n");
+				mergeSort(p,0,count-1, 1);
 				Timer timer;
 				float min2 = ClosestPair(p, count);
 				y2 = timer.getElapsedTime();
@@ -277,16 +345,24 @@ int main(int argc, char *argv[]){
 				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
 				printf("Thoi gian chay: %f\n",y2);
 				printf("\n");
-				 break;
-			 }
-			 default: {
-			 	printf("Ban khong lua chon thuat toan\n");
-			 	break;
-			 }
-		 }
+				getchar();
+				free(p);
+				break;
+			}
+			case 3:{
+				system("clear");
+				if (checkRead == false)
+				{
+					printf("Chua co danh sach! Hay tao du lieu dau vao...\n");
+					break;
+				}
+				printPoint(p);
+			}
+		}
+	}while(choose != 4);
 //		 result(y1,y2);
-		 dmin = FLT_MAX;
-		 free(p);
+		 // dmin = FLT_MAX;
+		 
 //		 Sleep(2000);
 //	}
 	return 0;
