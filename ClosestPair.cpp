@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <conio.h>
 #include <time.h>
 #include <float.h>
 // #include <windows.h>
@@ -106,8 +107,9 @@ void generatePoint(Point a[], int n){
 
 
 //Ghi lai ket qua
-void result(double y1, double y2){
-	FILE* f1 = fopen("result.txt","a+");
+void result(double y1, double y2, char fileName[]){
+	strcat(fileName, ".out");
+	FILE* f1 = fopen(fileName,"a+");
 	if(f1 == NULL){
 		printf("Khong mo duoc file");
 		exit(1);
@@ -264,22 +266,13 @@ float ClosestPair(Point* p, int n){
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
-//	for(int i = 0; i < 5; i++){
-		// Point* q = (Point*) malloc (number*sizeof(Point));
-
-//		generatePoint(q, number);
-	// char fileName;
-	// printf("Hay nhap ten file du lieu dau vao\n");
-		// readFile();
-		//Sap xep cac diem theo toa do y
 		
 	int choose;
-		//	printf("Co %d diem tren mat phang.\n", count);
-		//	printPoint(p);
 	do{
 		
 		double y1, y2;
-		system("clear");
+		// system("clear");
+		system("cls");
 		printf("Xin moi lua chon:\n");
 		printf("1. Doc du lieu dau vao\n");
 		printf("2. Giai quyet bai toan\n");
@@ -288,24 +281,27 @@ int main(int argc, char *argv[]){
 		// printf("3. Thuat toan Chia de tri\n");
 		printf("Nhap vao lua chon cua ban: ");
 		scanf("%d", &choose);
-		
-		// clrscr();
+
 		switch(choose){
-	     	 case 1:{
-	     	 	system("clear");
+	     	case 1:{
+	     	 	// system("clear");
+	     	 	system("cls");
+	     	 	int chooseIn;
 				//Doc du lieu dau vao trong chuong trinh
 				printf("1. Doc du lieu tu file\n");
 				printf("2. Nhap du lieu tu ban phim\n");
-				int chooseIn;
+				printf("Xin moi lua chon: ");
+				
 				scanf("%d", &chooseIn);
 				switch(chooseIn){
 					case 1:{
 						fflush(stdin);
-						puts("Nhap vao ten file du lieu dau vao: ");
-						fflush(stdin);
+						printf("Nhap vao ten file du lieu dau vao: ");
 						scanf("%s",fileName);
 						readFile(fileName);
 						checkRead = true;
+						printf("Nhap diem thanh cong...");
+						getch();
 						// printPoint(p);
 						break;
 					}
@@ -323,47 +319,82 @@ int main(int argc, char *argv[]){
 						}
 						strcpy(fileName,"input");
 						savePoint(p, count, fileName);
-						checkRead = true;		//Bien kiem tra xem du lieu da duoc doc chua
+						checkRead = true;	//Bien kiem tra xem du lieu da duoc doc chua
+						printf("Nhap thanh cong...");
+						getch();
+						break;
+					}
+					default: {
+						printf("Xin hay chon 1 hoac 2...");
+						getch();
+						break;
 					}
 				}
 				 break;
 			 }
 			case 2:{
-				system("clear");
+				// system("clear");
+				system("cls");
 				if (checkRead == false)
 				{
 					printf("Chua doc du lieu dau vao...\n");
+					getch();
 					break;
 				}
 				printf("1. Brute Force\n");
 				printf("2. Divide and Conquer\n");
-				mergeSort(p,0,count-1, 1);
-				Timer timer;
-				float min2 = ClosestPair(p, count);
-				y2 = timer.getElapsedTime();
-				printf("Khoang cach gan nhat la: %3.2f\n", min2);
-				printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-				printf("Thoi gian chay: %f\n",y2);
-				printf("\n");
-				getchar();
-				free(p);
-				break;
+				printf("Xin moi lua chon thuat toan so: ");
+				int chooseAlgorithm;
+				scanf("%d", &chooseAlgorithm);
+				mergeSort(p,0,count-1, 1);				
+				switch(chooseAlgorithm){
+					case 1:{
+						Timer ti;
+						float min1 = bruteForce(p, count);
+						y1 = ti.getElapsedTime();
+						printf("Khoang cach gan nhat la: %3.2f\n", min1);
+						printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+						printf("Thoi gian chay: %f",y1);
+						getch();
+						break;
+					}
+					case 2:{
+						Timer timer;
+						float min2 = ClosestPair(p, count);
+						y2 = timer.getElapsedTime();
+						printf("Khoang cach gan nhat la: %3.2f\n", min2);
+						printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
+						printf("Thoi gian chay: %f",y2);
+						printf("\n");
+						// getchar();
+						
+						getch();
+						break;
+					}
+					default: {
+						printf("Ban khong lua chon thuat toan\n");
+						getch();
+						break;
+					}
+				}	
+				break;	
 			}
 			case 3:{
-				system("clear");
+				// system("clear");
+				system("cls");
 				if (checkRead == false)
 				{
 					printf("Chua co danh sach! Hay tao du lieu dau vao...\n");
+					getch();
 					break;
 				}
+				printf("Co %d diem tren mat phang", count);
 				printPoint(p);
+				getch();
+				break;
 			}
 		}
 	}while(choose != 4);
-//		 result(y1,y2);
-		 // dmin = FLT_MAX;
-		 
-//		 Sleep(2000);
-//	}
+	free(p);
 	return 0;
 }
