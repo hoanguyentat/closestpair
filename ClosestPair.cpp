@@ -13,7 +13,7 @@
 using namespace std;
 int count = 0;
 char fileName[50]="input";
-bool checkRead = false;
+
 struct Point{
 	int x, y;
 };
@@ -33,11 +33,13 @@ float min(float, float);
 float stripClosest(Point*, int, float);
 float dist(Point, Point);								// khoang cach giua hai diem o, q
 float bruteForce(Point*, int);						// Thuat toan vet can
-
+int compareY(const void*, const void*);
 //Doc gia tri dau vao
 void readFile(char fileName[]){
-	strcat(fileName, ".in");		//Gan phan mo rong cho file
-	FILE* f = fopen(fileName,"rt");
+	char fileread[50];
+	strcpy(fileread,fileName);
+	strcat(fileread, ".in");		//Gan phan mo rong cho file
+	FILE* f = fopen(fileread,"rt");
 	if(f==NULL) {
 		printf("Khong mo duoc file\n");
 		exit(0);
@@ -54,10 +56,13 @@ void readFile(char fileName[]){
 	fclose(f);
 }
 
-void savePoint(Point *p, int count, char file[]){
+//Luu cac diem dau vao nhap tu ban phim
+void savePoint(Point *p, int count, char fileName[]){
 	FILE *f;
-	strcat(file,".in");
-	f = fopen(file,"w");
+	char fileread[50];
+	strcpy(fileread,fileName);
+	strcat(fileread,".in");
+	f = fopen(fileread,"w");
 	if (f == NULL)
 	{
 		printf("Khong mo duoc file\n");
@@ -80,23 +85,26 @@ bool checkPoint(Point *a, int count, int x, int y){
 	return 0;
 }
 
-void generatePoint(Point a[], int n){
+//Sinh diem ngau nhien 
+void generatePoint(Point a[], int n, char fileName[]){
 	FILE *f;
-	f = fopen("point.txt","w");
+	char generateFile[30];
+	strcpy(generateFile,fileName);
+	strcat(generateFile,".in");
+	f = fopen(generateFile,"w");
 	if (f == NULL)
 	{
 		printf("Khong mo duoc file\n");
 		exit(1);
 	}
 	fprintf(f, "%d\n", n);
-//	int count = 0;
 	int x; int y;
-	x = rand() %10000;
+	x = rand() %100000;
 	y = rand() %100000;
 	for(int i = 0; i < n; i++){
 		while(checkPoint(a,i,x,y)){
-			x = rand() %10000;
-			y = rand() %10000;
+			x = rand() %100000;
+			y = rand() %100000;
 		}
 		a[i].x = x;
 		a[i].y = y;
@@ -106,18 +114,21 @@ void generatePoint(Point a[], int n){
 }
 
 
-//Ghi lai ket qua
-void result(double y1, double y2, char fileName[]){
-	strcat(fileName, ".out");
-	FILE* f1 = fopen(fileName,"a+");
+//Luu lai ket qua
+void result(Point A, Point B, double y, char fileName[]){
+	char fileResult[50];
+	strcpy(fileResult,fileName);
+	strcat(fileResult, ".out");
+	FILE* f1 = fopen(fileResult,"a+");
 	if(f1 == NULL){
 		printf("Khong mo duoc file");
 		exit(1);
 	}
-	fprintf(f1,"%f %f %d\n",y1,y2,count);
+	fprintf(f1,"%d\n%d %d\n%d %d\n%f\n\n",count,A.x, A.y, B.x, B.y, y);
 	fclose(f1);
 }
 
+//Gan gia tri cua p cho q
 void setPoint(Point* p, Point* q){
 	for(int i = 0; i < count; i++){
 		q[i] = p[i];
@@ -164,6 +175,13 @@ float bruteForce(Point *p, int n){
 		}
 	}
 	return min;
+}
+
+//Sap xep so sanh theo chieu tang toa do Y su dung qsort() san co trong thu vien stdlib;
+int compareY(const void* a, const void* b){
+	Point *p1 = (Point*) a;
+	Point *p2 = (Point*) b;
+	return (p1->y - p2->y);
 }
 
 void merge(Point* p, int L, int M, int R, int flag){
@@ -266,21 +284,22 @@ float ClosestPair(Point* p, int n){
 }
 int main(int argc, char *argv[]){
 	srand(time(NULL));
+	bool checkRead = false;			// Bien kiem tra su ton tai cua du lieu
 		
-	int choose;
+	int choose;			//Bien kiem tra lua chon dau vao lan 1
 	do{
 		
-		double y1, y2;
+		// double y1, y2;
 		// system("clear");
 		system("cls");
-		printf("Xin moi lua chon:\n");
 		printf("1. Doc du lieu dau vao\n");
 		printf("2. Giai quyet bai toan\n");
 		printf("3. Danh sach cac diem\n");
 		printf("4. Thoat\n");
-		// printf("3. Thuat toan Chia de tri\n");
-		printf("Nhap vao lua chon cua ban: ");
-		scanf("%d", &choose);
+		do{
+			printf("Nhap vao lua chon cua ban: ");
+			scanf("%d", &choose);
+		}while(choose != 1 && choose !=2 && choose != 3 && choose != 4);
 
 		switch(choose){
 	     	case 1:{
@@ -290,19 +309,21 @@ int main(int argc, char *argv[]){
 				//Doc du lieu dau vao trong chuong trinh
 				printf("1. Doc du lieu tu file\n");
 				printf("2. Nhap du lieu tu ban phim\n");
-				printf("Xin moi lua chon: ");
-				
-				scanf("%d", &chooseIn);
+				printf("3. Sinh diem ngau nhien\n");
+				do{
+					printf("Xin moi lua chon: ");
+					scanf("%d", &chooseIn);
+				}
+				while(chooseIn != 1 && chooseIn != 2 && chooseIn != 3);
 				switch(chooseIn){
 					case 1:{
 						fflush(stdin);
-						printf("Nhap vao ten file du lieu dau vao: ");
+						printf("Nhap ten file du lieu dau vao: ");
 						scanf("%s",fileName);
 						readFile(fileName);
 						checkRead = true;
-						printf("Nhap diem thanh cong...");
+						printf("Nhap thanh cong...");
 						getch();
-						// printPoint(p);
 						break;
 					}
 					// Doc du lieu tu ban phim
@@ -317,16 +338,29 @@ int main(int argc, char *argv[]){
 							printf("y[%d]: ",i+1);
 							scanf("%d", &p[i].y);
 						}
-						strcpy(fileName,"input");
+						fflush(stdin);
+						printf("Nhap ten file de luu: ");
+						scanf("%s",fileName);
 						savePoint(p, count, fileName);
-						checkRead = true;	//Bien kiem tra xem du lieu da duoc doc chua
+						checkRead = true;	//Bien kiem tra trang thai dau vao
+						printf("Nhap thanh cong...");
+						getch();
+						break;
+					}
+					case 3:{
+						printf("Nhap vap so diem: ");
+						scanf("%d", &count);
+						printf("Nhap ten file de luu: ");
+						scanf("%s",fileName);
+						p = (Point*) malloc (count * sizeof(Point));
+						srand(time(NULL));
+						generatePoint(p, count, fileName);
+						checkRead = true;
 						printf("Nhap thanh cong...");
 						getch();
 						break;
 					}
 					default: {
-						printf("Xin hay chon 1 hoac 2...");
-						getch();
 						break;
 					}
 				}
@@ -341,34 +375,37 @@ int main(int argc, char *argv[]){
 					getch();
 					break;
 				}
+				int chooseAlgorithm;
 				printf("1. Brute Force\n");
 				printf("2. Divide and Conquer\n");
-				printf("Xin moi lua chon thuat toan so: ");
-				int chooseAlgorithm;
-				scanf("%d", &chooseAlgorithm);
-				mergeSort(p,0,count-1, 1);				
+				do{
+					printf("Xin moi lua chon thuat toan so: ");
+					scanf("%d", &chooseAlgorithm);
+				}while (chooseAlgorithm != 1 && chooseAlgorithm != 2);
+//				mergeSort(p,0,count-1, 1);	
+				qsort(p, count, sizeof(Point), compareY);
+				bool checkSolution = false;	
+				Timer ti;	
+				double y;	
 				switch(chooseAlgorithm){
 					case 1:{
-						Timer ti;
-						float min1 = bruteForce(p, count);
-						y1 = ti.getElapsedTime();
-						printf("Khoang cach gan nhat la: %3.2f\n", min1);
+					
+						bruteForce(p, count);
+						y = ti.getElapsedTime();
+						printf("Khoang cach gan nhat la: %3.2f\n", dmin);
 						printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-						printf("Thoi gian chay: %f",y1);
-						getch();
+						printf("Thoi gian chay: %f",y);
+						checkSolution = true;
 						break;
 					}
 					case 2:{
-						Timer timer;
-						float min2 = ClosestPair(p, count);
-						y2 = timer.getElapsedTime();
-						printf("Khoang cach gan nhat la: %3.2f\n", min2);
+						ClosestPair(p, count);
+						y = ti.getElapsedTime();
+						printf("Khoang cach gan nhat la: %3.2f\n", dmin);
 						printf("Hai diem gan nhau nhat la:\nA(%d, %d), B(%d, %d)\n",a.x,a.y,b.x,b.y);
-						printf("Thoi gian chay: %f",y2);
+						printf("Thoi gian chay: %f",y);
 						printf("\n");
-						// getchar();
-						
-						getch();
+						checkSolution = true;	
 						break;
 					}
 					default: {
@@ -377,6 +414,19 @@ int main(int argc, char *argv[]){
 						break;
 					}
 				}	
+				if(checkSolution == true){
+					char saveResult[10] = "";
+					printf("\nBan co muon luu lai ket qua khong? c/k? ");
+					scanf("%s", saveResult);
+					if(strcmp(saveResult,"c") == 0 || strcmp(saveResult,"C") == 0 || strcmp(saveResult,"co") == 0){
+						char fileOut[30];
+						printf("Nhap ten file de luu ket qua: ");
+						scanf("%s", fileOut);
+						result(a, b, y, fileOut);
+						printf("Da luu ket qua vao file %s.out...", fileOut);
+					} 
+				}
+				getch();
 				break;	
 			}
 			case 3:{
@@ -388,7 +438,7 @@ int main(int argc, char *argv[]){
 					getch();
 					break;
 				}
-				printf("Co %d diem tren mat phang", count);
+				printf("Co %d diem tren mat phang\n", count);
 				printPoint(p);
 				getch();
 				break;
